@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lista de Presentes – Bruno & Karen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F5F2;--card:#fff;--ink:#1E2F2B;--mute:#65746F;--line:#D9E0DC;--acc:#A94A63;--accfg:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141C1A;--card:#1D2825;--ink:#E9EFEC;--mute:#95A59F;--line:#2C3A36;--acc:#D77A93;--accfg:#1a1014}}
+:root[data-theme="dark"]{--bg:#141C1A;--card:#1D2825;--ink:#E9EFEC;--mute:#95A59F;--line:#2C3A36;--acc:#D77A93;--accfg:#1a1014}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Jost,system-ui,sans-serif}
+h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;margin:0;line-height:1.1}
+.hero{text-align:center;padding:72px 20px 40px;max-width:720px;margin:auto}
+.hero h1{font-size:clamp(3rem,11vw,5.6rem);letter-spacing:-.01em}
+.hero h1 i{font-weight:500;color:var(--acc);padding:0 .1em}
+.hero p{color:var(--mute);margin:16px auto 0;max-width:46ch}
+.bar{display:flex;gap:8px;overflow-x:auto;padding:8px 20px 20px;max-width:1000px;margin:auto;justify-content:center;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 16px;border-radius:99px;font:inherit;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+main{max-width:1000px;margin:auto;padding:0 20px 140px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.gift{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.gift .ic{font-size:1.9rem}
+.gift h3{font-size:1.4rem;margin-top:6px}
+.gift p{margin:0;color:var(--mute);font-size:.92rem;flex:1}
+.gift .pr{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.7rem;font-weight:600;margin-top:10px}
+.btn{font:inherit;font-weight:500;border:0;border-radius:4px;padding:11px 16px;background:var(--acc);color:var(--accfg);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.gift.sel{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.gift.sel .btn{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.free{display:flex;gap:8px;margin-top:10px}
+.free input{flex:1;min-width:0}
+input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:10px;width:100%}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tray{position:fixed;left:0;right:0;bottom:0;background:var(--ink);color:var(--bg);padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;transform:translateY(110%);transition:transform .25s}
+.tray.on{transform:none}
+.tray b{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.6rem}
+.tray .btn{background:var(--bg);color:var(--ink)}
+dialog{border:0;border-radius:8px;background:var(--card);color:var(--ink);width:min(480px,92vw);padding:24px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h2{font-size:2rem;margin-bottom:8px}
+dialog label{display:block;margin:14px 0 4px;font-weight:500}
+ul.sum{list-style:none;padding:0;margin:12px 0;border-top:1px solid var(--line)}
+ul.sum li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.pix{background:var(--bg);border:1px dashed var(--acc);border-radius:6px;padding:12px;margin-top:12px;word-break:break-all}
+.row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.row .btn{flex:1}
+footer{text-align:center;color:var(--mute);padding:0 20px 40px;font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1 id="nomes"></h1>
+  <p id="sub"></p>
+</header>
+<div class="bar" id="filtros" role="group" aria-label="Categorias"></div>
+<main><div class="grid" id="grid"></div></main>
+<footer>Cada presente vira uma contribuição via Pix. Obrigado por fazer parte do nosso começo!</footer>
+
+<div class="tray" id="tray">
+  <div><span id="qtd"></span><br><b id="tot"></b></div>
+  <button class="btn" id="fin">Finalizar presente</button>
+</div>
+
+<dialog id="dlg">
+  <h2>Seu presente</h2>
+  <ul class="sum" id="sum"></ul>
+  <label for="nome">Seu nome</label>
+  <input id="nome" placeholder="Como devemos te agradecer?">
+  <label for="msg">Recado para os noivos (opcional)</label>
+  <textarea id="msg" rows="3"></textarea>
+  <div class="pix">
+    <div>Faça o Pix no valor total de <b id="pixval"></b></div>
+    <div style="margin-top:6px"><small id="pixkey"></small></div>
+  </div>
+  <div class="row">
+    <button class="btn ghost" id="copia">Copiar chave Pix</button>
+    <button class="btn" id="zap">Avisar os noivos</button>
+  </div>
+  <div class="row"><button class="btn ghost" id="fecha">Voltar à lista</button></div>
+</dialog>
+
+<script>
+// ====== EDITE AQUI ======
+const CONFIG={
+  noiva:"Bruno", noivo:"Karen",
+  data:"15 de novembro de 2026",
+  pix:"21983598885",   // sua chave Pix
+  whatsapp:"5521983598885"         // DDI+DDD+número, só dígitos
+};
+const GIFTS=[
+ {id:1,cat:"Lua de mel",ic:"✈️",n:"Passagens aéreas",d:"Parte das passagens para a nossa viagem.",p:500},
+ {id:2,cat:"Lua de mel",ic:"🏨",n:"Uma noite de hotel",d:"Uma noite de descanso à beira-mar.",p:400},
+ {id:3,cat:"Lua de mel",ic:"🍷",n:"Jantar a dois",d:"Um jantar romântico em local especial.",p:250},
+ {id:4,cat:"Lua de mel",ic:"⛵",n:"Passeio de barco",d:"Um dia de mar e sol para os dois.",p:180},
+ {id:5,cat:"Lua de mel",ic:"🥐",n:"Café da manhã",d:"Para começar bem cada dia da viagem.",p:90},
+ {id:6,cat:"Casa",ic:"🍳",n:"Jogo de panelas",d:"Para os primeiros jantares em casa.",p:350},
+ {id:7,cat:"Casa",ic:"🛏️",n:"Jogo de cama",d:"Lençóis macios para o nosso quarto.",p:280},
+ {id:8,cat:"Casa",ic:"☕",n:"Cafeteira",d:"Para o café de todas as manhãs.",p:220},
+ {id:9,cat:"Casa",ic:"🍟",n:"Air fryer",d:"Praticidade para o dia a dia.",p:450},
+ {id:10,cat:"Casa",ic:"🤖",n:"Aspirador robô",d:"Mais tempo livre para a gente.",p:600},
+ {id:11,cat:"Casa",ic:"🥂",n:"Kit de taças",d:"Para brindar cada conquista.",p:150},
+ {id:12,cat:"Casa",ic:"🛋️",n:"Entrada do sofá",d:"Ajuda para o sofá da sala.",p:300}
+];
+// ========================
+const $=s=>document.querySelector(s), fmt=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const sel=new Map(); let cat="Todos";
+$("#nomes").innerHTML=`${CONFIG.noiva}<i>&amp;</i>${CONFIG.noivo}`;
+$("#sub").textContent=`Vamos casar em ${CONFIG.data}. Se quiser nos presentear, escolha abaixo o que mais gostar e contribua com o valor.`;
+document.title=`Lista de Presentes – ${CONFIG.noiva} & ${CONFIG.noivo}`;
+
+function filtros(){
+  const cats=["Todos",...new Set(GIFTS.map(g=>g.cat)),"Valor livre"];
+  $("#filtros").innerHTML=cats.map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join("");
+}
+function grid(){
+  let html="";
+  if(cat==="Valor livre"){
+    html=`<div class="gift"><div class="ic">💌</div><h3>Contribuição livre</h3><p>Escolha o valor que quiser presentear.</p>
+    <div class="free"><input id="lv" type="number" min="10" step="10" placeholder="R$" inputmode="decimal"><button class="btn" id="addlv">Adicionar</button></div></div>`;
+    sel.forEach((g,id)=>{if(String(id).startsWith("l"))html+=card(g)});
+  } else html=GIFTS.filter(g=>cat==="Todos"||g.cat===cat).map(card).join("");
+  $("#grid").innerHTML=html;
+}
+function card(g){
+  const on=sel.has(g.id);
+  return `<article class="gift ${on?"sel":""}"><div class="ic">${g.ic}</div><h3>${g.n}</h3><p>${g.d}</p>
+  <div class="pr">${fmt(g.p)}</div><button class="btn" data-id="${g.id}">${on?"Remover":"Presentear"}</button></article>`;
+}
+function tray(){
+  const t=[...sel.values()].reduce((a,g)=>a+g.p,0);
+  $("#tray").classList.toggle("on",sel.size>0);
+  $("#qtd").textContent=sel.size+(sel.size===1?" presente":" presentes");
+  $("#tot").textContent=fmt(t);
+  return t;
+}
+document.addEventListener("click",e=>{
+  const c=e.target.closest(".chip"); if(c){cat=c.dataset.c;filtros();grid();return}
+  const b=e.target.closest("[data-id]");
+  if(b){const id=b.dataset.id;const key=isNaN(id)?id:+id;
+    if(sel.has(key))sel.delete(key);else sel.set(key,GIFTS.find(g=>g.id===key));
+    grid();tray();return}
+  if(e.target.id==="addlv"){const v=parseFloat($("#lv").value);
+    if(!(v>=10)){$("#lv").focus();return}
+    const id="l"+Date.now();sel.set(id,{id,ic:"💌",n:"Contribuição livre",d:"Valor escolhido por você.",p:v});grid();tray()}
+});
+$("#fin").onclick=()=>{
+  const t=tray();
+  $("#sum").innerHTML=[...sel.values()].map(g=>`<li><span>${g.ic} ${g.n}</span><span>${fmt(g.p)}</span></li>`).join("")+`<li><b>Total</b><b>${fmt(t)}</b></li>`;
+  $("#pixval").textContent=fmt(t);$("#pixkey").textContent="Chave Pix: "+CONFIG.pix;
+  $("#dlg").showModal();
+};
+$("#fecha").onclick=()=>$("#dlg").close();
+$("#copia").onclick=async e=>{
+  try{await navigator.clipboard.writeText(CONFIG.pix);e.target.textContent="Chave copiada"}
+  catch{e.target.textContent="Copie: "+CONFIG.pix}
+};
+$("#zap").onclick=()=>{
+  const nome=$("#nome").value.trim()||"Um convidado", msg=$("#msg").value.trim();
+  const itens=[...sel.values()].map(g=>`• ${g.n} (${fmt(g.p)})`).join("\n");
+  const total=[...sel.values()].reduce((a,g)=>a+g.p,0);
+  const txt=`Oi! Sou ${nome} e fiz um Pix de ${fmt(total)} para presentear vocês:\n${itens}${msg?`\n\n${msg}`:""}`;
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(txt)}`,"_blank");
+};
+filtros();grid();
+</script>
+</body>
+</html>
