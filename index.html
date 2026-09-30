@@ -6,12 +6,12 @@
     <title>Mural - Rede Social</title>
     <style>
         :root {
-            --bg-color: #0f172a; /* Fundo escuro moderno */
+            --bg-color: #0f172a;
             --sidebar-bg: #1e293b;
             --card-bg: #1e293b;
-            --primary: #8b5cf6; /* Roxo vibrante */
+            --primary: #8b5cf6;
             --primary-hover: #7c3aed;
-            --accent: #ec4899; /* Rosa choque / Cores vivas */
+            --accent: #ec4899;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
@@ -31,7 +31,7 @@
             min-height: 100vh;
         }
 
-        /* BARRA LATERAL (ESTILO APP MODERNO) */
+        /* BARRA LATERAL */
         aside {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -112,7 +112,7 @@
             font-size: 0.95rem;
         }
 
-        /* CAIXA DE POSTAGEM COM FOTO OBRIGATÓRIA */
+        /* CAIXA DE POSTAGEM */
         .post-box {
             background: var(--card-bg);
             padding: 20px;
@@ -357,7 +357,6 @@
             background: var(--primary-hover);
         }
 
-        /* Responsividade para telemóveis */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -376,7 +375,6 @@
 </head>
 <body>
 
-    <!-- BARRA LATERAL COM ABAS -->
     <aside>
         <div class="logo-area">⚡ MURAL</div>
         <div class="tabs-container">
@@ -387,31 +385,28 @@
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main>
         <header>
             <h1>Mural Comunitário</h1>
             <p>Partilhe as suas fotos, interaja e veja os comentários da comunidade!</p>
         </header>
 
-        <!-- CAIXA DE POSTAGEM (FOTO OBRIGATÓRIA) -->
         <div class="post-box">
             <input type="text" placeholder="Seu nome ou apelido" id="authorInput">
             <textarea placeholder="Escreva uma legenda para a sua foto..." id="captionInput" rows="2"></textarea>
             
             <div>
-                <label class="file-upload-btn" for="imageFile">📷 Escolher Foto Obrigatória (*)</label>
+                <!-- Texto limpo, sem a palavra obrigatório visível -->
+                <label class="file-upload-btn" for="imageFile">📷 Escolher Foto</label>
                 <input type="file" id="imageFile" accept="image/*">
-                <span id="fileName" style="font-size: 0.8rem; color: var(--accent); margin-top: 5px; display: block;">Nenhuma foto selecionada (Obrigatório)</span>
+                <span id="fileName" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: block;">Nenhuma foto selecionada</span>
             </div>
 
             <button class="btn-submit" id="postBtn">Publicar no Mural</button>
         </div>
 
-        <!-- FEED DE POSTS -->
         <div class="feed" id="feedContainer">
             
-            <!-- Exemplo de Post -->
             <div class="post-card">
                 <div class="post-header">
                     <div class="author-info">
@@ -421,14 +416,13 @@
                     <span class="post-tag">Geral</span>
                 </div>
 
-                <!-- Imagem protegida contra download -->
                 <div class="protected-img-wrapper" oncontextmenu="return false;">
                     <div class="image-shield"></div>
                     <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Post">
                 </div>
 
                 <div class="post-body">
-                    <div class="post-caption">Visual com cores vibrantes e barra lateral implementado com sucesso! O que achou deste estilo concorrente?</div>
+                    <div class="post-caption">Visual limpo e profissional sem textos poluídos! O que achou?</div>
 
                     <div class="post-actions">
                         <button class="action-btn" onclick="curtirPost(this)">
@@ -440,7 +434,7 @@
                     </div>
 
                     <div class="comments-box">
-                        <div class="comment-item"><strong>Maria:</strong> Ficou com uma cara super moderna e fluida!</div>
+                        <div class="comment-item"><strong>Maria:</strong> Ficou excelente, bem limpo!</div>
                         
                         <div class="comment-input-area">
                             <input type="text" placeholder="Escreva um comentário...">
@@ -470,25 +464,25 @@
         imageFile.addEventListener('change', function() {
             if (imageFile.files.length > 0) {
                 fileName.textContent = "Foto carregada: " + imageFile.files[0].name;
-                fileName.style.color = "#4ade80"; // Verde indicando sucesso
+                fileName.style.color = "#4ade80"; 
             } else {
-                fileName.textContent = "Nenhuma foto selecionada (Obrigatório)";
-                fileName.style.color = "var(--accent)";
+                fileName.textContent = "Nenhuma foto selecionada";
+                fileName.style.color = "var(--text-muted)";
             }
         });
 
-        // Validação para garantir que a foto é obrigatória ao clicar em publicar
+        // Validação interna mantida: exige foto por trás sem precisar estampar na tela
         postBtn.addEventListener('click', function() {
             const author = document.getElementById('authorInput').value;
             if (imageFile.files.length === 0) {
-                alert("Atenção: É obrigatório selecionar uma fotografia para fazer uma publicação neste mural!");
+                alert("Por favor, selecione uma fotografia para continuar.");
                 return;
             }
             if (!author.trim()) {
                 alert("Por favor, preencha o seu nome ou apelido.");
                 return;
             }
-            alert("Publicação pronta para ser integrada ao sistema!");
+            alert("Publicação pronta!");
         });
 
         function curtirPost(botao) {
@@ -502,7 +496,6 @@
             }
         }
 
-        // Bloqueio de clique direito e download nas imagens
         document.addEventListener('contextmenu', function(e) {
             if (e.target.tagName === 'IMG') {
                 e.preventDefault();
