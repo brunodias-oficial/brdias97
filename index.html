@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omegle Vídeo - Clone</title>
+    <title>Mural de Fotos Comunitário</title>
     <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,140 +21,191 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        header {
-            padding: 12px 20px;
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-            font-size: 1.5rem;
-            font-weight: bold;
-            font-family: Georgia, serif;
-        }
-
-        header span {
-            color: #2b6cb0;
-        }
-
-        /* ÁREA DOS VÍDEOS (Lado a lado) */
-        .video-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             padding: 20px;
         }
 
-        .video-box {
-            width: 45%;
-            height: 70vh;
-            background-color: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        /* Elemento de vídeo real */
-        video {
+        header h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* FORMULÁRIO DE POSTAGEM */
+        .post-form {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-form input, .post-form textarea {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1); /* Espelha a câmera para ficar natural */
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
         }
 
-        .video-label {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
+        .post-form input:focus, .post-form textarea:focus {
+            border-color: var(--primary);
         }
 
-        /* BOTÕES DE CONTROLE */
-        .controls {
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            background: #fff;
-            border-top: 1px solid #ddd;
-        }
-
-        .btn-next {
-            background-color: #e53e3e;
+        .post-form button {
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
+            padding: 12px;
+            border-radius: 8px;
             font-weight: bold;
-            border-radius: 6px;
             cursor: pointer;
             transition: background 0.2s;
         }
 
-        .btn-next:hover {
-            background-color: #c53030;
+        .post-form button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* FEED DE FOTOS */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .photo-post {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .post-author {
+            padding: 12px 15px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .photo-post img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .post-content {
+            padding: 15px;
+        }
+
+        .post-content p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        /* ÁREA DE COMENTÁRIOS */
+        .comments-section {
+            border-top: 1px solid #f1f5f9;
+            padding-top: 10px;
+        }
+
+        .comment {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .comment-input-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .comment-input-box input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .comment-input-box button {
+            background: #e2e8f0;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .comment-input-box button:hover {
+            background: #cbd5e1;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        Omegle <span>Video Clone</span>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Mural Livre</h1>
+            <p>Poste sua foto, deixe sua legenda e veja o que os outros estão compartilhando!</p>
+        </header>
 
-    <!-- Espaço dos dois vídeos -->
-    <div class="video-container">
-        <!-- Vídeo da outra pessoa -->
-        <div class="video-box">
-            <div class="video-label">Estranho</div>
-            <video id="remoteVideo" autoplay playsinline></video>
+        <!-- Formulário para postar -->
+        <div class="post-form">
+            <input type="text" placeholder="Seu nome ou apelido" id="authorInput">
+            <input type="text" placeholder="Link da imagem (URL da foto)" id="imageInput">
+            <textarea placeholder="Escreva uma legenda..." id="captionInput" rows="2"></textarea>
+            <button id="postBtn">Publicar Foto</button>
         </div>
 
-        <!-- Seu próprio vídeo -->
-        <div class="video-box">
-            <div class="video-label">Você</div>
-            <video id="localVideo" autoplay playsinline muted></video>
+        <!-- Onde as fotos vão aparecer -->
+        <div class="feed" id="feedContainer">
+            
+            <!-- Exemplo de Post -->
+            <div class="photo-post">
+                <div class="post-author">João Silva</div>
+                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Exemplo">
+                <div class="post-content">
+                    <p>Curtindo ovisual de hoje por aqui! O que acharam?</p>
+                    
+                    <div class="comments-section">
+                        <div class="comment"><strong>Maria:</strong> Que foto linda!</div>
+                        <div class="comment"><strong>Carlos:</strong> Show demais mano!</div>
+                        
+                        <div class="comment-input-box">
+                            <input type="text" placeholder="Escreva um comentário...">
+                            <button>Comentar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
-    <!-- Botão de Pular -->
-    <div class="controls">
-        <button class="btn-next" id="btnNext">Escape / Novo</button>
-    </div>
-
-    <script>
-        // Código JavaScript básico para ligar a SUA webcam na tela
-        const localVideo = document.getElementById('localVideo');
-
-        async function iniciarCamera() {
-            try {
-                // Pede permissão para usar a webcam e o microfone
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                // Joga o vídeo da sua câmera no elemento <video> da página
-                localVideo.srcObject = stream;
-            } catch (erro) {
-                alert("Não foi possível acessar sua webcam. Verifique as permissões do navegador.");
-                console.error(erro);
-            }
-        }
-
-        // Executa a função assim que a página carrega
-        iniciarCamera();
-    </script>
 
 </body>
 </html>
