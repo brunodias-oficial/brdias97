@@ -392,6 +392,13 @@
             gap: 10px;
         }
 
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
         .comment-item {
             font-size: 0.85rem;
             background: #0f172a;
@@ -403,7 +410,7 @@
         .comment-input-area {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .comment-input-area input {
@@ -465,7 +472,7 @@
         <div id="muralSection" class="view-section active">
             <header>
                 <h1>Mural Comunitário</h1>
-                <p>Partilhe as suas fotos, interaja e veja os comentários da comunidade!</p>
+                <p>Partilhe as suas fotos e veja os comentários da comunidade!</p>
             </header>
 
             <div class="post-box">
@@ -481,6 +488,7 @@
                 <button class="btn-submit" id="postBtn">Publicar no Mural</button>
             </div>
 
+            <!-- FEED ONDE OS POSTS APARECEM DINAMICAMENTE -->
             <div class="feed" id="feedContainer">
                 <div class="post-card">
                     <div class="post-header">
@@ -497,7 +505,7 @@
                     </div>
 
                     <div class="post-body">
-                        <div class="post-caption">Sistema de lives otimizado e pronto para transmissão por câmara!</div>
+                        <div class="post-caption">Rede social atualizada com publicações e comentários dinâmicos!</div>
 
                         <div class="post-actions">
                             <button class="action-btn" onclick="curtirPost(this)">
@@ -509,11 +517,12 @@
                         </div>
 
                         <div class="comments-box">
-                            <div class="comment-item"><strong>Maria:</strong> Ficou excelente e muito fluido!</div>
-                            
+                            <div class="comment-list">
+                                <div class="comment-item"><strong>Maria:</strong> Isto agora está incrível!</div>
+                            </div>
                             <div class="comment-input-area">
                                 <input type="text" placeholder="Escreva um comentário...">
-                                <button>Enviar</button>
+                                <button onclick="adicionarComentario(this)">Enviar</button>
                             </div>
                         </div>
                     </div>
@@ -545,6 +554,7 @@
 
     <script>
         let streamAtivo = null;
+        let imagemSelecionadaUrl = "";
 
         function mudarAba(secao, elementoBotao) {
             document.getElementById('muralSection').classList.remove('active');
@@ -561,7 +571,126 @@
             elementoBotao.classList.add('active');
         }
 
-        // Função para ligar/desligar a câmara diretamente
+        // Gestão da imagem escolhida para o post
+        const imageFile = document.getElementById('imageFile');
+        const fileName = document.getElementById('fileName');
+
+        imageFile.addEventListener('change', function() {
+            if (imageFile.files.length > 0) {
+                const file = imageFile.files[0];
+                fileName.textContent = "Foto carregada: " + file.name;
+                fileName.style.color = "#4ade80"; 
+                imagemSelecionadaUrl = URL.createObjectURL(file);
+            } else {
+                fileName.textContent = "Nenhuma foto selecionada";
+                fileName.style.color = "var(--text-muted)";
+                imagemSelecionadaUrl = "";
+            }
+        });
+
+        // Função para Publicar no Mural Dinamicamente
+        const postBtn = document.getElementById('postBtn');
+        postBtn.addEventListener('click', function() {
+            const author = document.getElementById('authorInput').value.trim();
+            const caption = document.getElementById('captionInput').value.trim();
+
+            if (!author) {
+                alert("Por favor, preencha o seu nome ou apelido.");
+                return;
+            }
+            if (!imagemSelecionadaUrl) {
+                alert("Por favor, selecione uma fotografia para publicar.");
+                return;
+            }
+
+            // Cria as iniciais para o avatar
+            const iniciais = author.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
+
+            // Cria o elemento HTML do novo post
+            const feedContainer = document.getElementById('feedContainer');
+            const novoCard = document.createElement('div');
+            novoCard.classList.add('post-card');
+
+            novoCard.innerHTML = `
+                <div class="post-header">
+                    <div class="author-info">
+                        <div class="author-avatar">${iniciais}</div>
+                        <span class="author-name">${author}</span>
+                    </div>
+                    <span class="post-tag">Geral</span>
+                </div>
+
+                <div class="protected-img-wrapper" oncontextmenu="return false;">
+                    <div class="image-shield"></div>
+                    <img src="${imagemSelecionadaUrl}" alt="Post">
+                </div>
+
+                <div class="post-body">
+                    <div class="post-caption">${caption || "Sem legenda."}</div>
+
+                    <div class="post-actions">
+                        <button class="action-btn" onclick="curtirPost(this)">
+                            ❤️ <span class="like-count">0</span> Curtidas
+                        </button>
+                        <button class="action-btn">
+                            💬 Comentários
+                        </button>
+                    </div>
+
+                    <div class="comments-box">
+                        <div class="comment-list"></div>
+                        <div class="comment-input-area">
+                            <input type="text" placeholder="Escreva um comentário...">
+                            <button onclick="adicionarComentario(this)">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Insere o post no topo do feed
+            feedContainer.insertBefore(novoCard, feedContainer.firstChild);
+
+            // Limpa os campos
+            document.getElementById('captionInput').value = "";
+            imageFile.value = "";
+            fileName.textContent = "Nenhuma foto selecionada";
+            fileName.style.color = "var(--text-muted)";
+            imagemSelecionadaUrl = "";
+
+            alert("Publicado com sucesso!");
+        });
+
+        // Função para Adicionar Comentários Dinamicamente
+        function adicionarComentario(botao) {
+            const inputArea = botao.previousElementSibling;
+            const textoComentario = inputArea.value.trim();
+
+            if (!textoComentario) return;
+
+            const commentsBox = botao.closest('.comments-box');
+            const commentList = commentsBox.querySelector('.comment-list');
+
+            const novoComentario = document.createElement('div');
+            novoComentario.classList.add('comment-item');
+            novoComentario.innerHTML = `<strong>Utilizador:</strong> ${textoComentario}`;
+
+            commentList.appendChild(novoComentario);
+            inputArea.value = "";
+        }
+
+        // Função para Curtir posts
+        function curtirPost(botao) {
+            botao.classList.toggle('liked');
+            const spanCount = botao.querySelector('.like-count');
+            let atual = parseInt(spanCount.textContent);
+            if (botao.classList.contains('liked')) {
+                spanCount.textContent = atual + 1;
+            } else {
+                spanCount.textContent = atual - 1;
+            }
+        }
+
+        // Função da Live
         async function toggleLive() {
             const titulo = document.getElementById('liveTitleInput').value;
             const videoElement = document.getElementById('liveVideo');
@@ -606,44 +735,7 @@
             }
         }
 
-        const imageFile = document.getElementById('imageFile');
-        const fileName = document.getElementById('fileName');
-        const postBtn = document.getElementById('postBtn');
-
-        imageFile.addEventListener('change', function() {
-            if (imageFile.files.length > 0) {
-                fileName.textContent = "Foto carregada: " + imageFile.files[0].name;
-                fileName.style.color = "#4ade80"; 
-            } else {
-                fileName.textContent = "Nenhuma foto selecionada";
-                fileName.style.color = "var(--text-muted)";
-            }
-        });
-
-        postBtn.addEventListener('click', function() {
-            const author = document.getElementById('authorInput').value;
-            if (imageFile.files.length === 0) {
-                alert("Por favor, selecione uma fotografia para continuar.");
-                return;
-            }
-            if (!author.trim()) {
-                alert("Por favor, preencha o seu nome ou apelido.");
-                return;
-            }
-            alert("Publicação pronta!");
-        });
-
-        function curtirPost(botao) {
-            botao.classList.toggle('liked');
-            const spanCount = botao.querySelector('.like-count');
-            let atual = parseInt(spanCount.textContent);
-            if (botao.classList.contains('liked')) {
-                spanCount.textContent = atual + 1;
-            } else {
-                spanCount.textContent = atual - 1;
-            }
-        }
-
+        // Proteção de imagens
         document.addEventListener('contextmenu', function(e) {
             if (e.target.tagName === 'IMG') {
                 e.preventDefault();
