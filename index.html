@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omegle - Conversa de Texto</title>
+    <title>Omegle Vídeo - Clone</title>
     <style>
         * {
             margin: 0;
@@ -13,204 +13,138 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffff;
+            background-color: #f0f2f5;
             color: #333;
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
 
-        /* TOPO / LOGO */
         header {
-            padding: 15px 20px;
+            padding: 12px 20px;
+            background: #fff;
             border-bottom: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-        }
-
-        .omegle-logo {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #000;
             font-family: Georgia, serif;
         }
 
-        .omegle-logo span {
+        header span {
             color: #2b6cb0;
         }
 
-        /* ÁREA PRINCIPAL DO CHAT */
-        .chatbox-wrapper {
+        /* ÁREA DOS VÍDEOS (Lado a lado) */
+        .video-container {
             flex: 1;
             display: flex;
-            flex-direction: column;
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
             padding: 20px;
         }
 
-        .log-container {
-            flex: 1;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            padding: 15px;
-            overflow-y: auto;
+        .video-box {
+            width: 45%;
+            height: 70vh;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-size: 0.95rem;
-            max-height: calc(100vh - 250px);
-        }
-
-        .log-message {
-            line-height: 1.4;
-        }
-
-        .log-message.status {
-            color: #7f8c8d;
-            font-style: italic;
-        }
-
-        .log-message.stranger {
-            color: red;
-            font-weight: bold;
-        }
-
-        .log-message.you {
-            color: blue;
-            font-weight: bold;
-        }
-
-        /* ÁREA DE CONTROLE E INPUT */
-        .control-area {
-            display: flex;
-            margin-top: 15px;
-            gap: 10px;
+            justify-content: center;
             align-items: center;
         }
 
-        .btn-disconnect {
+        /* Elemento de vídeo real */
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Espelha a câmera para ficar natural */
+        }
+
+        .video-label {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* BOTÕES DE CONTROLE */
+        .controls {
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            background: #fff;
+            border-top: 1px solid #ddd;
+        }
+
+        .btn-next {
             background-color: #e53e3e;
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
+            padding: 12px 30px;
+            font-size: 1.1rem;
             font-weight: bold;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .btn-disconnect:hover {
+        .btn-next:hover {
             background-color: #c53030;
-        }
-
-        .chat-input {
-            flex: 1;
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input textarea {
-            flex: 1;
-            height: 50px;
-            resize: none;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: Arial, sans-serif;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .chat-input textarea:focus {
-            border-color: #2b6cb0;
-        }
-
-        .btn-send {
-            background-color: #2b6cb0;
-            color: white;
-            border: none;
-            padding: 0 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-send:hover {
-            background-color: #2c5282;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="omegle-logo">Omegle <span>clone</span></div>
+        Omegle <span>Video Clone</span>
     </header>
 
-    <div class="chatbox-wrapper">
-        <!-- Histórico de Conversas (Estilo Clássico) -->
-        <div class="log-container" id="logContainer">
-            <div class="log-message status">Conectando ao servidor...</div>
-            <div class="log-message status">Você está conectado com um estranho. Diga oi!</div>
+    <!-- Espaço dos dois vídeos -->
+    <div class="video-container">
+        <!-- Vídeo da outra pessoa -->
+        <div class="video-box">
+            <div class="video-label">Estranho</div>
+            <video id="remoteVideo" autoplay playsinline></video>
         </div>
 
-        <!-- Botão de Sair/Pular e Caixa de Texto -->
-        <div class="control-area">
-            <button class="btn-disconnect" id="btnNext">Escape / Pular</button>
-            <div class="chat-input">
-                <textarea id="messageInput" placeholder="Digite sua mensagem aqui..."></textarea>
-                <button class="btn-send" id="btnSend">Enviar</button>
-            </div>
+        <!-- Seu próprio vídeo -->
+        <div class="video-box">
+            <div class="video-label">Você</div>
+            <video id="localVideo" autoplay playsinline muted></video>
         </div>
     </div>
 
+    <!-- Botão de Pular -->
+    <div class="controls">
+        <button class="btn-next" id="btnNext">Escape / Novo</button>
+    </div>
+
     <script>
-        const logContainer = document.getElementById('logContainer');
-        const messageInput = document.getElementById('messageInput');
-        const btnSend = document.getElementById('btnSend');
-        const btnNext = document.getElementById('btnNext');
+        // Código JavaScript básico para ligar a SUA webcam na tela
+        const localVideo = document.getElementById('localVideo');
 
-        function addLog(text, type = 'status') {
-            const div = document.createElement('div');
-            div.classList.add('log-message', type);
-            div.innerHTML = text;
-            logContainer.appendChild(div);
-            logContainer.scrollTop = logContainer.scrollHeight;
-        }
-
-        function enviarMensagem() {
-            const texto = messageInput.value.trim();
-            if (texto !== "") {
-                addLog(`Você: ${texto}`, 'you');
-                messageInput.value = "";
-                
-                // Simulação de resposta automática só para teste visual
-                setTimeout(() => {
-                    addLog(`Estranho: Olá! Recebi sua mensagem: "${texto}"`, 'stranger');
-                }, 1000);
+        async function iniciarCamera() {
+            try {
+                // Pede permissão para usar a webcam e o microfone
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                // Joga o vídeo da sua câmera no elemento <video> da página
+                localVideo.srcObject = stream;
+            } catch (erro) {
+                alert("Não foi possível acessar sua webcam. Verifique as permissões do navegador.");
+                console.error(erro);
             }
         }
 
-        btnSend.addEventListener('click', enviarMensagem);
-        
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                enviarMensagem();
-            }
-        });
-
-        btnNext.addEventListener('click', function() {
-            logContainer.innerHTML = "";
-            addLog("Você conversou com alguém. A conversa foi encerrada.", 'status');
-            addLog("Procurando um novo estranho...", 'status');
-            setTimeout(() => {
-                addLog("Conectado a um novo estranho!", 'status');
-            }, 1500);
-        });
+        // Executa a função assim que a página carrega
+        iniciarCamera();
     </script>
 
 </body>
