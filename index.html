@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ge - Portal de Esportes</title>
+    <title>Bate-Papo Anônimo</title>
     <style>
         :root {
-            --ge-green: #008542;
-            --ge-dark-green: #00602f;
-            --ge-yellow: #ffcc00;
-            --bg-body: #f5f5f5;
-            --text-dark: #222;
-            --text-gray: #666;
+            --bg-color: #0f172a;
+            --chat-bg: #1e293b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         * {
@@ -21,213 +21,188 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-        }
-
-        /* BARRA DO TOPO (Estilo GE) */
-        header {
-            background-color: var(--ge-green);
-            border-bottom: 4px solid var(--ge-yellow);
-            padding: 15px 30px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
         }
 
-        .logo {
-            color: white;
-            font-size: 2.2rem;
-            font-weight: bold;
-            text-decoration: uppercase;
-            font-style: italic;
-            letter-spacing: -2px;
-        }
-
-        .logo span {
-            color: var(--ge-yellow);
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-        }
-
-        nav a:hover {
-            color: var(--ge-yellow);
-        }
-
-        /* CONTEÚDO PRINCIPAL */
-        .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            padding: 0 15px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* MANCHETE PRINCIPAL */
-        .main-news {
-            background: white;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .main-news img {
+        .chat-container {
             width: 100%;
-            height: 350px;
-            object-fit: cover;
-            display: block;
+            max-width: 600px;
+            height: 80vh;
+            background-color: var(--chat-bg);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #334155;
         }
 
-        .main-news-content {
-            padding: 20px;
+        /* CABEÇALHO DO CHAT */
+        .chat-header {
+            padding: 15px 20px;
+            background-color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
         }
 
-        .tag {
-            color: var(--ge-green);
-            font-weight: bold;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            display: inline-block;
-        }
-
-        .main-news h1 {
-            font-size: 1.8rem;
-            line-height: 1.3;
-            margin-bottom: 12px;
-            color: #111;
-        }
-
-        .main-news p {
-            color: var(--text-gray);
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-
-        /* LATERAL (ÚLTIMAS NOTÍCIAS) */
-        .sidebar {
-            background: white;
-            border-radius: 4px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            height: fit-content;
-        }
-
-        .sidebar h3 {
-            font-size: 1.1rem;
-            border-bottom: 2px solid var(--ge-green);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            color: var(--ge-dark-green);
-        }
-
-        .sidebar-item {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .sidebar-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .sidebar-item span {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-            font-weight: bold;
-        }
-
-        .sidebar-item h4 {
-            font-size: 0.95rem;
-            margin-top: 4px;
-            color: #222;
-        }
-
-        .sidebar-item h4:hover {
-            color: var(--ge-green);
-            cursor: pointer;
-        }
-
-        /* RODAPÉ */
-        footer {
-            background-color: #111;
-            color: #aaa;
-            text-align: center;
-            padding: 25px;
-            margin-top: 50px;
+        .status {
             font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .status span {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .btn-next {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-next:hover {
+            background-color: #dc2626;
+        }
+
+        /* CAIXA DE MENSAGENS */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .message.system {
+            background-color: #334155;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 100%;
+            font-size: 0.85rem;
+        }
+
+        .message.incoming {
+            background-color: #334155;
+            align-self: flex-start;
+        }
+
+        .message.outgoing {
+            background-color: var(--accent);
+            align-self: flex-end;
+        }
+
+        /* ÁREA DE DIGITAÇÃO */
+        .chat-input-area {
+            padding: 15px;
+            background-color: #0f172a;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #334155;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .chat-input-area input:focus {
+            border-color: var(--accent);
+        }
+
+        .chat-input-area button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background-color: var(--accent-hover);
         }
     </style>
 </head>
 <body>
 
-    <!-- TOPO -->
-    <header>
-        <div class="logo">g<span>e</span></div>
-        <nav>
-            <a href="#">Futebol</a>
-            <a href="#">Tabela</a>
-            <a href="#">Futebol Internacional</a>
-        </nav>
-    </header>
+    <div class="chat-container">
+        <!-- Topo -->
+        <div class="chat-header">
+            <div class="status">Status: <span>Procurando conversa...</span></div>
+            <button class="btn-next">Pular / Sair</button>
+        </div>
 
-    <!-- CORPO DO SITE -->
-    <div class="container">
-        
-        <!-- COLUNA DA ESQUERDA: Notícia Principal -->
-        <main class="main-news">
-            <img src="fotos/foto1.jpg" alt="Foto da Manchete">
-            <div class="main-news-content">
-                <span class="tag">Futebol Nacional</span>
-                <h1>Título principal da matéria: aqui você coloca a grande novidade do dia do seu time ou campeonato</h1>
-                <p>Escreva um resumo curto sobre o que aconteceu. Detalhe os principais pontos da partida, declaração de jogadores ou a expectativa para a próxima rodada do campeonato...</p>
-            </div>
-        </main>
+        <!-- Mensagens -->
+        <div class="chat-messages" id="messageBox">
+            <div class="message system">Você está conectado com um estranho. Diga oi!</div>
+            <div class="message incoming">Olá! Tudo bem?</div>
+            <div class="message outgoing">Tudo ótimo! E com você?</div>
+        </div>
 
-        <!-- COLUNA DA DIREITA: Últimas -->
-        <aside class="sidebar">
-            <h3>Placar & Últimas</h3>
-
-            <div class="sidebar-item">
-                <span>HÁ 15 MINUTOS</span>
-                <h4>Treinador concede entrevista coletiva e projeta próximo confronto decisivo.</h4>
-            </div>
-
-            <div class="sidebar-item">
-                <span>HÁ 45 MINUTOS</span>
-                <h4>Atacante titular sente dores musculares e passa por exames médicos.</h4>
-            </div>
-
-            <div class="sidebar-item">
-                <span>HÁ 2 HORAS</span>
-                <h4>Confira a tabela atualizada e a matemática da briga pelo título.</h4>
-            </div>
-        </aside>
-
+        <!-- Digitação -->
+        <div class="chat-input-area">
+            <input type="tecla" placeholder="Digite sua mensagem..." id="messageInput">
+            <button id="sendBtn">Enviar</button>
+        </div>
     </div>
 
-    <!-- RODAPÉ -->
-    <footer>
-        <p>&copy; 2026 - Minha Página Esportiva inspirada no GE. Todos os direitos reservados.</p>
-    </footer>
+    <script>
+        // Pequena lógica visual de exemplo para envio de mensagem
+        const messageBox = document.getElementById('messageBox');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function enviarMensagem() {
+            const texto = messageInput.value.trim();
+            if (texto !== "") {
+                const novaMsg = document.createElement('div');
+                novaMsg.classList.add('message', 'outgoing');
+                novaMsg.textContent = texto;
+                messageBox.appendChild(novaMsg);
+                messageInput.value = "";
+                messageBox.scrollTop = messageBox.scrollHeight; // Rola para o fim
+            }
+        }
+
+        sendBtn.addEventListener('click', enviarMensagem);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                enviarMensagem();
+            }
+        });
+    </script>
 
 </body>
 </html>
