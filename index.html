@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural - Rede Social</title>
+    <title>Mural & Lives - Rede Social</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -12,6 +12,7 @@
             --primary: #8b5cf6;
             --primary-hover: #7c3aed;
             --accent: #ec4899;
+            --live-color: #ef4444; /* Vermelho vibrante para Lives */
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
@@ -82,6 +83,15 @@
             box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
         }
 
+        .tab-btn.live-tab {
+            color: #fca5a5;
+        }
+
+        .tab-btn.live-tab.active {
+            background: linear-gradient(135deg, var(--live-color), #dc2626);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
         .tab-btn:hover:not(.active) {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-main);
@@ -112,7 +122,15 @@
             font-size: 0.95rem;
         }
 
-        /* CAIXA DE POSTAGEM */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* CAIXA DE POSTAGEM DO MURAL */
         .post-box {
             background: var(--card-bg);
             padding: 20px;
@@ -180,7 +198,64 @@
             opacity: 0.9;
         }
 
-        /* FEED DE POSTS */
+        /* ESTILO DA ÁREA DE LIVES */
+        .live-studio-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .live-screen {
+            width: 100%;
+            height: 350px;
+            background: #000;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--live-color);
+        }
+
+        .live-badge-on {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--live-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .btn-start-live {
+            background: linear-gradient(135deg, var(--live-color), #dc2626);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        /* FEED E POSTS */
         .feed {
             display: flex;
             flex-direction: column;
@@ -236,7 +311,6 @@
             text-transform: uppercase;
         }
 
-        /* BLOQUEIO DE DOWNLOAD DE IMAGEM */
         .protected-img-wrapper {
             width: 100%;
             max-height: 450px;
@@ -275,7 +349,6 @@
             line-height: 1.5;
         }
 
-        /* BARRA DE AÇÕES */
         .post-actions {
             display: flex;
             border-top: 1px solid var(--border-color);
@@ -310,7 +383,6 @@
             color: #ec4899;
         }
 
-        /* SEÇÃO DE COMENTÁRIOS */
         .comments-box {
             display: flex;
             flex-direction: column;
@@ -353,10 +425,6 @@
             cursor: pointer;
         }
 
-        .comment-input-area button:hover {
-            background: var(--primary-hover);
-        }
-
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -375,86 +443,117 @@
 </head>
 <body>
 
+    <!-- BARRA LATERAL COM ABAS E LIVE -->
     <aside>
         <div class="logo-area">⚡ MURAL</div>
         <div class="tabs-container">
-            <button class="tab-btn active" onclick="mudarMural('geral')">🌍 Geral</button>
-            <button class="tab-btn" onclick="mudarMural('pets')">🐾 Pets</button>
-            <button class="tab-btn" onclick="mudarMural('looks')">✨ Looks</button>
-            <button class="tab-btn" onclick="mudarMural('memes')">😂 Memes</button>
+            <button class="tab-btn active" onclick="mudarAba('mural', this)">🌍 Mural Geral</button>
+            <button class="tab-btn" onclick="mudarAba('pets', this)">🐾 Pets</button>
+            <button class="tab-btn" onclick="mudarAba('looks', this)">✨ Looks</button>
+            <button class="tab-btn" onclick="mudarAba('memes', this)">😂 Memes</button>
+            <button class="tab-btn live-tab" onclick="mudarAba('lives', this)">🔴 Transmissões (Live)</button>
         </div>
     </aside>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main>
-        <header>
-            <h1>Mural Comunitário</h1>
-            <p>Partilhe as suas fotos, interaja e veja os comentários da comunidade!</p>
-        </header>
+        
+        <!-- SEÇÃO DO MURAL DE FOTOS -->
+        <div id="muralSection" class="view-section active">
+            <header>
+                <h1>Mural Comunitário</h1>
+                <p>Partilhe as suas fotos, interaja e veja os comentários da comunidade!</p>
+            </header>
 
-        <div class="post-box">
-            <input type="text" placeholder="Seu nome ou apelido" id="authorInput">
-            <textarea placeholder="Escreva uma legenda para a sua foto..." id="captionInput" rows="2"></textarea>
-            
-            <div>
-                <!-- Texto limpo, sem a palavra obrigatório visível -->
-                <label class="file-upload-btn" for="imageFile">📷 Escolher Foto</label>
-                <input type="file" id="imageFile" accept="image/*">
-                <span id="fileName" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: block;">Nenhuma foto selecionada</span>
+            <div class="post-box">
+                <input type="text" placeholder="Seu nome ou apelido" id="authorInput">
+                <textarea placeholder="Escreva uma legenda para a sua foto..." id="captionInput" rows="2"></textarea>
+                
+                <div>
+                    <label class="file-upload-btn" for="imageFile">📷 Escolher Foto</label>
+                    <input type="file" id="imageFile" accept="image/*">
+                    <span id="fileName" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: block;">Nenhuma foto selecionada</span>
+                </div>
+
+                <button class="btn-submit" id="postBtn">Publicar no Mural</button>
             </div>
 
-            <button class="btn-submit" id="postBtn">Publicar no Mural</button>
-        </div>
-
-        <div class="feed" id="feedContainer">
-            
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="author-info">
-                        <div class="author-avatar">BD</div>
-                        <span class="author-name">Bruno Dias</span>
-                    </div>
-                    <span class="post-tag">Geral</span>
-                </div>
-
-                <div class="protected-img-wrapper" oncontextmenu="return false;">
-                    <div class="image-shield"></div>
-                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Post">
-                </div>
-
-                <div class="post-body">
-                    <div class="post-caption">Visual limpo e profissional sem textos poluídos! O que achou?</div>
-
-                    <div class="post-actions">
-                        <button class="action-btn" onclick="curtirPost(this)">
-                            ❤️ <span class="like-count">24</span> Curtidas
-                        </button>
-                        <button class="action-btn">
-                            💬 Comentários
-                        </button>
+            <div class="feed" id="feedContainer">
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="author-info">
+                            <div class="author-avatar">BD</div>
+                            <span class="author-name">Bruno Dias</span>
+                        </div>
+                        <span class="post-tag">Geral</span>
                     </div>
 
-                    <div class="comments-box">
-                        <div class="comment-item"><strong>Maria:</strong> Ficou excelente, bem limpo!</div>
-                        
-                        <div class="comment-input-area">
-                            <input type="text" placeholder="Escreva um comentário...">
-                            <button>Enviar</button>
+                    <div class="protected-img-wrapper" oncontextmenu="return false;">
+                        <div class="image-shield"></div>
+                        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Post">
+                    </div>
+
+                    <div class="post-body">
+                        <div class="post-caption">Seção de transmissões ao vivo adicionada na barra lateral!</div>
+
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="curtirPost(this)">
+                                ❤️ <span class="like-count">35</span> Curtidas
+                            </button>
+                            <button class="action-btn">
+                                💬 Comentários
+                            </button>
+                        </div>
+
+                        <div class="comments-box">
+                            <div class="comment-item"><strong>Maria:</strong> Incrível a aba de lives!</div>
+                            
+                            <div class="comment-input-area">
+                                <input type="text" placeholder="Escreva um comentário...">
+                                <button>Enviar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
+
+        <!-- SEÇÃO DE LIVES (AO VIVO) -->
+        <div id="livesSection" class="view-section">
+            <header>
+                <h1>Transmissões ao Vivo</h1>
+                <p>Assista a criadores em tempo real ou inicie a sua própria transmissão!</p>
+            </header>
+
+            <div class="live-studio-box">
+                <input type="text" placeholder="Título da sua Live (Ex: Bate-papo com a galera)" id="liveTitleInput">
+                
+                <div class="live-screen">
+                    <div class="live-badge-on">🔴 AO VIVO</div>
+                    <p style="color: var(--text-muted);">Câmera aguardando conexão...</p>
+                </div>
+
+                <button class="btn-start-live" onclick="iniciarLive()">Iniciar Transmissão</button>
+            </div>
+        </div>
+
     </main>
 
     <script>
-        let muralAtual = 'geral';
+        // Função para alternar entre as abas do mural e a aba de live
+        function mudarAba(secao, elementoBotao) {
+            document.getElementById('muralSection').classList.remove('active');
+            document.getElementById('livesSection').classList.remove('active');
 
-        function mudarMural(categoria) {
-            muralAtual = categoria;
+            if (secao === 'lives') {
+                document.getElementById('livesSection').classList.add('active');
+            } else {
+                document.getElementById('muralSection').classList.add('active');
+            }
+
             const botoes = document.querySelectorAll('.tab-btn');
             botoes.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            elementoBotao.classList.add('active');
         }
 
         const imageFile = document.getElementById('imageFile');
@@ -471,7 +570,6 @@
             }
         });
 
-        // Validação interna mantida: exige foto por trás sem precisar estampar na tela
         postBtn.addEventListener('click', function() {
             const author = document.getElementById('authorInput').value;
             if (imageFile.files.length === 0) {
@@ -484,6 +582,15 @@
             }
             alert("Publicação pronta!");
         });
+
+        function iniciarLive() {
+            const titulo = document.getElementById('liveTitleInput').value;
+            if(!titulo.trim()) {
+                alert("Por favor, insira um título para a sua live.");
+                return;
+            }
+            alert("Sua transmissão '" + titulo + "' foi configurada com sucesso!");
+        }
 
         function curtirPost(botao) {
             botao.classList.toggle('liked');
