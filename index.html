@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural de Fotos Comunitário</title>
+    <title>Murais Comunitários</title>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -29,7 +29,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         header h1 {
@@ -40,11 +40,43 @@
 
         header p {
             color: var(--text-muted);
+            font-size: 0.95rem;
         }
 
         .container {
             max-width: 600px;
             margin: 0 auto;
+        }
+
+        /* ABAS DE ESCOLHA DE MURAL */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-bottom: 25px;
+            padding-bottom: 5px;
+        }
+
+        .tab-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            opacity: 0.9;
         }
 
         /* FORMULÁRIO DE POSTAGEM */
@@ -59,17 +91,39 @@
             gap: 12px;
         }
 
-        .post-form input, .post-form textarea {
+        .post-form input, .post-form textarea, .post-form select {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             font-size: 0.95rem;
             outline: none;
+            background: #fff;
         }
 
         .post-form input:focus, .post-form textarea:focus {
             border-color: var(--primary);
+        }
+
+        .file-upload-label {
+            display: block;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .file-upload-label:hover {
+            background: #e2e8f0;
+        }
+
+        .post-form input[type="file"] {
+            display: none;
         }
 
         .post-form button {
@@ -106,13 +160,49 @@
             font-weight: bold;
             font-size: 0.95rem;
             border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-tag {
+            font-size: 0.75rem;
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        /* BLOQUEIO DE DOWNLOAD E CÓPIA NA IMAGEM */
+        .protected-img-container {
+            width: 100%;
+            max-height: 400px;
+            overflow: hidden;
+            background: #000;
+            position: relative;
         }
 
         .photo-post img {
             width: 100%;
+            height: 100%;
             max-height: 400px;
             object-fit: cover;
             display: block;
+            /* Desativa arrastar a imagem e seleção */
+            -webkit-user-drag: none;
+            user-select: none;
+            pointer-events: none; /* Impede clique direto na tag img */
+        }
+
+        /* Camada invisível por cima da imagem para bloquear botão direito */
+        .image-shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
         }
 
         .post-content {
@@ -170,14 +260,27 @@
 
     <div class="container">
         <header>
-            <h1>Mural Livre</h1>
-            <p>Poste sua foto, deixe sua legenda e veja o que os outros estão compartilhando!</p>
+            <h1 id="muralTitle">Mural: Geral</h1>
+            <p>Poste sua foto, deixe sua legenda e veja o que os outros estão comentando!</p>
         </header>
 
-        <!-- Formulário para postar -->
+        <!-- ABAS PARA TROCAR DE MURAL -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="mudarMural('geral', 'Mural: Geral')">🌍 Geral</button>
+            <button class="tab-btn" onclick="mudarMural('pets', 'Mural: Pets & Animais')">🐾 Pets</button>
+            <button class="tab-btn" onclick="mudarMural('looks', 'Mural: Looks & Estilo')">✨ Looks</button>
+            <button class="tab-btn" onclick="mudarMural('memes', 'Mural: Memes & Zoeira')">😂 Memes</button>
+        </div>
+
+        <!-- FORMULÁRIO DE POSTAGEM -->
         <div class="post-form">
             <input type="text" placeholder="Seu nome ou apelido" id="authorInput">
-            <input type="text" placeholder="Link da imagem (URL da foto)" id="imageInput">
+            
+            <!-- Botão de escolher arquivo do celular/PC (Sem precisar de link) -->
+            <label class="file-upload-label" for="imageFile">📁 Escolher foto do dispositivo</label>
+            <input type="file" id="imageFile" accept="image/*">
+            <span id="fileName" style="font-size: 0.8rem; color: var(--text-muted); display: none;">Nenhuma foto escolhida</span>
+
             <textarea placeholder="Escreva uma legenda..." id="captionInput" rows="2"></textarea>
             <button id="postBtn">Publicar Foto</button>
         </div>
@@ -185,16 +288,23 @@
         <!-- Onde as fotos vão aparecer -->
         <div class="feed" id="feedContainer">
             
-            <!-- Exemplo de Post -->
+            <!-- Exemplo de Post com Proteção de Imagem -->
             <div class="photo-post">
-                <div class="post-author">João Silva</div>
-                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Exemplo">
+                <div class="post-author">
+                    <span>Bruno Dias</span>
+                    <span class="post-tag">Geral</span>
+                </div>
+                
+                <div class="protected-img-container" oncontextmenu="return false;">
+                    <div class="image-shield"></div>
+                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Exemplo protegido">
+                </div>
+
                 <div class="post-content">
-                    <p>Curtindo ovisual de hoje por aqui! O que acharam?</p>
+                    <p>Curtindo o visual de hoje por aqui! O que acharam? (Imagem protegida contra download)</p>
                     
                     <div class="comments-section">
                         <div class="comment"><strong>Maria:</strong> Que foto linda!</div>
-                        <div class="comment"><strong>Carlos:</strong> Show demais mano!</div>
                         
                         <div class="comment-input-box">
                             <input type="text" placeholder="Escreva um comentário...">
@@ -206,6 +316,38 @@
 
         </div>
     </div>
+
+    <script>
+        let muralAtual = 'geral';
+
+        function mudarMural(categoria, nomeTitulo) {
+            muralAtual = categoria;
+            document.getElementById('muralTitle').textContent = nomeTitulo;
+
+            const botoes = document.querySelectorAll('.tab-btn');
+            botoes.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Mostra o nome do arquivo selecionado para o usuário saber que carregou
+        const imageFile = document.getElementById('imageFile');
+        const fileName = document.getElementById('fileName');
+
+        imageFile.addEventListener('change', function() {
+            if (imageFile.files.length > 0) {
+                fileName.textContent = "Foto selecionada: " + imageFile.files[0].name;
+                fileName.style.display = "block";
+            }
+        });
+
+        // Bloqueia o clique direito globalmente nas imagens da página para dificultar salvar
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                alert("O download e salvamento de imagens estão desativados neste mural.");
+            }
+        });
+    </script>
 
 </body>
 </html>
