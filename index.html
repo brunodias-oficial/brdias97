@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Murais Comunitários</title>
+    <title>Mural Comunitário</title>
     <style>
         :root {
-            --bg-color: #f8fafc;
+            --bg-color: #f0f2f5;
             --card-bg: #ffffff;
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --primary: #1877f2;
+            --primary-hover: #166fe5;
+            --text-main: #050505;
+            --text-muted: #65676b;
+            --border-color: #e4e6eb;
         }
 
         * {
@@ -21,26 +22,10 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        header h1 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
         }
 
         .container {
@@ -48,154 +33,196 @@
             margin: 0 auto;
         }
 
-        /* ABAS DE ESCOLHA DE MURAL */
+        /* CABEÇALHO COM APENAS "MURAL" */
+        header {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ABAS DE MURAIS */
         .tabs-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             overflow-x: auto;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding-bottom: 5px;
         }
 
         .tab-btn {
-            background: #e2e8f0;
-            border: none;
-            padding: 10px 18px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
             color: var(--text-muted);
+            transition: all 0.2s;
         }
 
         .tab-btn.active {
             background-color: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
 
-        .tab-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* FORMULÁRIO DE POSTAGEM */
-        .post-form {
+        /* CAIXA DE POSTAGEM */
+        .post-box {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .post-form input, .post-form textarea, .post-form select {
+        .post-box input, .post-box textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             font-size: 0.95rem;
             outline: none;
-            background: #fff;
+            background: #f0f2f5;
         }
 
-        .post-form input:focus, .post-form textarea:focus {
+        .post-box input:focus, .post-box textarea:focus {
+            background: #fff;
             border-color: var(--primary);
         }
 
-        .file-upload-label {
-            display: block;
-            background: #f1f5f9;
-            border: 2px dashed #cbd5e1;
-            padding: 12px;
-            text-align: center;
-            border-radius: 8px;
+        .file-upload-btn {
+            display: inline-block;
+            background: #e4e6eb;
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            color: var(--text-muted);
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            text-align: center;
+            transition: background 0.2s;
         }
 
-        .file-upload-label:hover {
-            background: #e2e8f0;
+        .file-upload-btn:hover {
+            background: #d8dadf;
         }
 
-        .post-form input[type="file"] {
+        .post-box input[type="file"] {
             display: none;
         }
 
-        .post-form button {
+        .btn-submit {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 6px;
             font-weight: bold;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: background 0.2s;
         }
 
-        .post-form button:hover {
+        .btn-submit:hover {
             background-color: var(--primary-hover);
         }
 
-        /* FEED DE FOTOS */
+        /* FEED DE POSTS */
         .feed {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
-        .photo-post {
+        .post-card {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
         }
 
-        .post-author {
+        .post-header {
             padding: 12px 15px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            border-bottom: 1px solid #f1f5f9;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-avatar {
+            width: 38px;
+            height: 38px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .author-name {
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
         .post-tag {
             font-size: 0.75rem;
-            background: #eef2ff;
+            background: #e7f3ff;
             color: var(--primary);
             padding: 3px 8px;
             border-radius: 4px;
+            font-weight: bold;
             text-transform: uppercase;
         }
 
-        /* BLOQUEIO DE DOWNLOAD E CÓPIA NA IMAGEM */
-        .protected-img-container {
+        /* BLOQUEIO DE DOWNLOAD DE IMAGEM */
+        .protected-img-wrapper {
             width: 100%;
-            max-height: 400px;
-            overflow: hidden;
+            max-height: 450px;
             background: #000;
             position: relative;
+            overflow: hidden;
         }
 
-        .photo-post img {
+        .protected-img-wrapper img {
             width: 100%;
             height: 100%;
-            max-height: 400px;
+            max-height: 450px;
             object-fit: cover;
             display: block;
-            /* Desativa arrastar a imagem e seleção */
             -webkit-user-drag: none;
             user-select: none;
-            pointer-events: none; /* Impede clique direto na tag img */
+            pointer-events: none;
         }
 
-        /* Camada invisível por cima da imagem para bloquear botão direito */
         .image-shield {
             position: absolute;
             top: 0;
@@ -205,110 +232,160 @@
             z-index: 10;
         }
 
-        .post-content {
-            padding: 15px;
+        .post-body {
+            padding: 12px 15px;
         }
 
-        .post-content p {
-            margin-bottom: 15px;
+        .post-caption {
             font-size: 0.95rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
         }
 
-        /* ÁREA DE COMENTÁRIOS */
-        .comments-section {
-            border-top: 1px solid #f1f5f9;
-            padding-top: 10px;
+        /* BARRA DE AÇÕES */
+        .post-actions {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 6px 0;
+            margin-bottom: 12px;
         }
 
-        .comment {
-            font-size: 0.85rem;
+        .action-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 6px;
+            font-weight: bold;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
 
-        .comment-input-box {
+        .action-btn:hover {
+            background: #f0f2f5;
+        }
+
+        .action-btn.liked {
+            color: #e0245e;
+        }
+
+        /* SEÇÃO DE COMENTÁRIOS */
+        .comments-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .comment-item {
+            font-size: 0.85rem;
+            background: #f0f2f5;
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+
+        .comment-input-area {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
-        .comment-input-box input {
+        .comment-input-area input {
             flex: 1;
-            padding: 8px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             font-size: 0.85rem;
             outline: none;
+            background: #f0f2f5;
         }
 
-        .comment-input-box button {
-            background: #e2e8f0;
+        .comment-input-area button {
+            background: var(--primary);
+            color: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 0 14px;
+            border-radius: 20px;
             font-weight: bold;
             font-size: 0.85rem;
-        }
-
-        .comment-input-box button:hover {
-            background: #cbd5e1;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- Cabeçalho apenas com o nome MURAL -->
         <header>
-            <h1 id="muralTitle">Mural: Geral</h1>
-            <p>Poste sua foto, deixe sua legenda e veja o que os outros estão comentando!</p>
+            <h1>Mural</h1>
+            <p>Poste sua foto ou mensagem, interaja e veja o que os outros estão comentando!</p>
         </header>
 
-        <!-- ABAS PARA TROCAR DE MURAL -->
+        <!-- Abas de Categorias -->
         <div class="tabs-container">
-            <button class="tab-btn active" onclick="mudarMural('geral', 'Mural: Geral')">🌍 Geral</button>
-            <button class="tab-btn" onclick="mudarMural('pets', 'Mural: Pets & Animais')">🐾 Pets</button>
-            <button class="tab-btn" onclick="mudarMural('looks', 'Mural: Looks & Estilo')">✨ Looks</button>
-            <button class="tab-btn" onclick="mudarMural('memes', 'Mural: Memes & Zoeira')">😂 Memes</button>
+            <button class="tab-btn active" onclick="mudarMural('geral')">🌍 Geral</button>
+            <button class="tab-btn" onclick="mudarMural('pets')">🐾 Pets</button>
+            <button class="tab-btn" onclick="mudarMural('looks')">✨ Looks</button>
+            <button class="tab-btn" onclick="mudarMural('memes')">😂 Memes</button>
         </div>
 
-        <!-- FORMULÁRIO DE POSTAGEM -->
-        <div class="post-form">
+        <!-- Caixa de Criação de Post -->
+        <div class="post-box">
             <input type="text" placeholder="Seu nome ou apelido" id="authorInput">
+            <textarea placeholder="O que você está pensando ou registrando?" id="captionInput" rows="2"></textarea>
             
-            <!-- Botão de escolher arquivo do celular/PC (Sem precisar de link) -->
-            <label class="file-upload-label" for="imageFile">📁 Escolher foto do dispositivo</label>
-            <input type="file" id="imageFile" accept="image/*">
-            <span id="fileName" style="font-size: 0.8rem; color: var(--text-muted); display: none;">Nenhuma foto escolhida</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="file-upload-btn" for="imageFile">📷 Adicionar Foto (Opcional)</label>
+                <input type="file" id="imageFile" accept="image/*">
+                <span id="fileName" style="font-size: 0.8rem; color: var(--text-muted);">Nenhuma foto</span>
+            </div>
 
-            <textarea placeholder="Escreva uma legenda..." id="captionInput" rows="2"></textarea>
-            <button id="postBtn">Publicar Foto</button>
+            <button class="btn-submit" id="postBtn">Publicar</button>
         </div>
 
-        <!-- Onde as fotos vão aparecer -->
+        <!-- Feed Principal -->
         <div class="feed" id="feedContainer">
             
-            <!-- Exemplo de Post com Proteção de Imagem -->
-            <div class="photo-post">
-                <div class="post-author">
-                    <span>Bruno Dias</span>
+            <!-- Exemplo de Post -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="author-info">
+                        <div class="author-avatar">BD</div>
+                        <span class="author-name">Bruno Dias</span>
+                    </div>
                     <span class="post-tag">Geral</span>
                 </div>
-                
-                <div class="protected-img-container" oncontextmenu="return false;">
+
+                <!-- Imagem protegida contra download -->
+                <div class="protected-img-wrapper" oncontextmenu="return false;">
                     <div class="image-shield"></div>
-                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Exemplo protegido">
+                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="Post">
                 </div>
 
-                <div class="post-content">
-                    <p>Curtindo o visual de hoje por aqui! O que acharam? (Imagem protegida contra download)</p>
-                    
-                    <div class="comments-section">
-                        <div class="comment"><strong>Maria:</strong> Que foto linda!</div>
+                <div class="post-body">
+                    <div class="post-caption">Título alterado para apenas "Mural" e agora aceita posts com ou sem foto! O que acharam?</div>
+
+                    <div class="post-actions">
+                        <button class="action-btn" onclick="curtirPost(this)">
+                            ❤️ <span class="like-count">12</span> Curtidas
+                        </button>
+                        <button class="action-btn">
+                            💬 Comentários
+                        </button>
+                    </div>
+
+                    <div class="comments-box">
+                        <div class="comment-item"><strong>Maria:</strong> Ficou perfeito assim!</div>
                         
-                        <div class="comment-input-box">
+                        <div class="comment-input-area">
                             <input type="text" placeholder="Escreva um comentário...">
-                            <button>Comentar</button>
+                            <button>Enviar</button>
                         </div>
                     </div>
                 </div>
@@ -320,31 +397,39 @@
     <script>
         let muralAtual = 'geral';
 
-        function mudarMural(categoria, nomeTitulo) {
+        function mudarMural(categoria) {
             muralAtual = categoria;
-            document.getElementById('muralTitle').textContent = nomeTitulo;
-
             const botoes = document.querySelectorAll('.tab-btn');
             botoes.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
         }
 
-        // Mostra o nome do arquivo selecionado para o usuário saber que carregou
         const imageFile = document.getElementById('imageFile');
         const fileName = document.getElementById('fileName');
 
         imageFile.addEventListener('change', function() {
             if (imageFile.files.length > 0) {
-                fileName.textContent = "Foto selecionada: " + imageFile.files[0].name;
-                fileName.style.display = "block";
+                fileName.textContent = imageFile.files[0].name;
+            } else {
+                fileName.textContent = "Nenhuma foto";
             }
         });
 
-        // Bloqueia o clique direito globalmente nas imagens da página para dificultar salvar
+        function curtirPost(botao) {
+            botao.classList.toggle('liked');
+            const spanCount = botao.querySelector('.like-count');
+            let atual = parseInt(spanCount.textContent);
+            if (botao.classList.contains('liked')) {
+                spanCount.textContent = atual + 1;
+            } else {
+                spanCount.textContent = atual - 1;
+            }
+        }
+
         document.addEventListener('contextmenu', function(e) {
             if (e.target.tagName === 'IMG') {
                 e.preventDefault();
-                alert("O download e salvamento de imagens estão desativados neste mural.");
+                alert("O salvamento e download de imagens estão desativados.");
             }
         });
     </script>
