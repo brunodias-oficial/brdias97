@@ -252,13 +252,8 @@
             100% { opacity: 1; }
         }
 
-        .live-buttons-row {
-            display: flex;
-            gap: 10px;
-        }
-
         .btn-start-live {
-            flex: 1;
+            width: 100%;
             background: linear-gradient(135deg, var(--live-color), #dc2626);
             color: white;
             border: none;
@@ -268,22 +263,6 @@
             font-size: 1rem;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-        }
-
-        .btn-screen-share {
-            background: rgba(139, 92, 246, 0.2);
-            border: 1px solid var(--primary);
-            color: white;
-            padding: 0 18px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-screen-share:hover {
-            background: rgba(139, 92, 246, 0.4);
         }
 
         /* FEED */
@@ -518,7 +497,7 @@
                     </div>
 
                     <div class="post-body">
-                        <div class="post-caption">Botão principal com câmara direta e ícone separado para espelhar tela!</div>
+                        <div class="post-caption">Sistema de lives otimizado e pronto para transmissão por câmara!</div>
 
                         <div class="post-actions">
                             <button class="action-btn" onclick="curtirPost(this)">
@@ -530,7 +509,7 @@
                         </div>
 
                         <div class="comments-box">
-                            <div class="comment-item"><strong>Maria:</strong> Ficou muito prático de usar!</div>
+                            <div class="comment-item"><strong>Maria:</strong> Ficou excelente e muito fluido!</div>
                             
                             <div class="comment-input-area">
                                 <input type="text" placeholder="Escreva um comentário...">
@@ -546,7 +525,7 @@
         <div id="livesSection" class="view-section">
             <header>
                 <h1>Transmissões ao Vivo</h1>
-                <p>Inicie a transmissão com a câmara ou clique no ícone para espelhar a tela!</p>
+                <p>Inicie a transmissão com a sua câmara de forma simples e rápida!</p>
             </header>
 
             <div class="live-studio-box">
@@ -558,10 +537,7 @@
                     <video id="liveVideo" autoplay playsinline muted></video>
                 </div>
 
-                <div class="live-buttons-row">
-                    <button class="btn-start-live" id="liveActionBtn" onclick="toggleLive()">Iniciar Transmissão</button>
-                    <button class="btn-screen-share" id="screenShareBtn" onclick="toggleScreenShare()" title="Espelhar Tela">🖥️</button>
-                </div>
+                <button class="btn-start-live" id="liveActionBtn" onclick="toggleLive()">Iniciar Transmissão</button>
             </div>
         </div>
 
@@ -585,14 +561,13 @@
             elementoBotao.classList.add('active');
         }
 
-        // Função principal: Liga a câmara diretamente
+        // Função para ligar/desligar a câmara diretamente
         async function toggleLive() {
             const titulo = document.getElementById('liveTitleInput').value;
             const videoElement = document.getElementById('liveVideo');
             const placeholder = document.getElementById('livePlaceholder');
             const badge = document.getElementById('liveBadge');
             const btn = document.getElementById('liveActionBtn');
-            const screenBtn = document.getElementById('screenShareBtn');
 
             if (!streamAtivo) {
                 if (!titulo.trim()) {
@@ -610,76 +585,25 @@
                     
                     btn.textContent = "Encerrar Transmissão";
                     btn.style.background = "linear-gradient(135deg, #475569, #334155)";
-                    screenBtn.style.display = 'none'; // Esconde o botão de espelhar durante a live
 
                 } catch (error) {
                     alert("Não foi possível aceder à câmara. Verifique as permissões do navegador.");
                     console.error(error);
                 }
             } else {
-                fecharTransmissao();
-            }
-        }
-
-        // Função dedicada: Espelhar a tela ao clicar no ícone 🖥️
-        async function toggleScreenShare() {
-            const titulo = document.getElementById('liveTitleInput').value;
-            const videoElement = document.getElementById('liveVideo');
-            const placeholder = document.getElementById('livePlaceholder');
-            const badge = document.getElementById('liveBadge');
-            const btn = document.getElementById('liveActionBtn');
-            const screenBtn = document.getElementById('screenShareBtn');
-
-            if (!streamAtivo) {
-                if (!titulo.trim()) {
-                    alert("Por favor, insira um título para a sua live antes de começar a partilhar a tela.");
-                    return;
+                if (streamAtivo) {
+                    streamAtivo.getTracks().forEach(track => track.stop());
+                    streamAtivo = null;
                 }
 
-                try {
-                    streamAtivo = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                videoElement.srcObject = null;
+                videoElement.style.display = 'none';
+                placeholder.style.display = 'block';
+                badge.style.display = 'none';
 
-                    videoElement.srcObject = streamAtivo;
-                    videoElement.style.display = 'block';
-                    placeholder.style.display = 'none';
-                    badge.style.display = 'block';
-                    
-                    btn.textContent = "Encerrar Transmissão";
-                    btn.style.background = "linear-gradient(135deg, #475569, #334155)";
-                    screenBtn.style.display = 'none';
-
-                    // Se o utilizador clicar no botão "Parar Partilha" do próprio navegador
-                    streamAtivo.getVideoTracks()[0].onended = function() {
-                        fecharTransmissao();
-                    };
-
-                } catch (error) {
-                    alert("A partilha de tela foi cancelada ou não foi permitida.");
-                    console.error(error);
-                }
+                btn.textContent = "Iniciar Transmissão";
+                btn.style.background = "linear-gradient(135deg, var(--live-color), #dc2626)";
             }
-        }
-
-        function fecharTransmissao() {
-            const videoElement = document.getElementById('liveVideo');
-            const placeholder = document.getElementById('livePlaceholder');
-            const badge = document.getElementById('liveBadge');
-            const btn = document.getElementById('liveActionBtn');
-            const screenBtn = document.getElementById('screenShareBtn');
-
-            if (streamAtivo) {
-                streamAtivo.getTracks().forEach(track => track.stop());
-                streamAtivo = null;
-            }
-
-            videoElement.srcObject = null;
-            videoElement.style.display = 'none';
-            placeholder.style.display = 'block';
-            badge.style.display = 'none';
-
-            btn.textContent = "Iniciar Transmissão";
-            btn.style.background = "linear-gradient(135deg, var(--live-color), #dc2626)";
-            screenBtn.style.display = 'block'; // Mostra novamente o botão de espelhar
         }
 
         const imageFile = document.getElementById('imageFile');
